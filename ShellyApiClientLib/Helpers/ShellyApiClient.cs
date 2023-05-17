@@ -53,15 +53,20 @@ public class ShellyApiClient
         try
         {
             httpResponseMessage = await _httpClient.PostAsync(_url + request.Resource, GetRequestContent(request));
-            await Task.Delay(_options.MinDelayBetweenRequestsMs);
-        
-            if (httpResponseMessage is null)
-                throw new HttpRequestException($"Response is null");
         }
         finally
         {
+            await Task.Delay(_options.MinDelayBetweenRequestsMs);
             _semaphore.Release();
         }
+        
+        if (httpResponseMessage is null)
+            throw new HttpRequestException($"Response is null");
+
+        if (_options.ThrowIfNotSuccess
+            && httpResponseMessage.StatusCode != HttpStatusCode.Created
+            && httpResponseMessage.StatusCode != HttpStatusCode.OK)
+            throw new HttpRequestException($"Status code is {httpResponseMessage.StatusCode}");
 
         return httpResponseMessage;
     }
@@ -70,12 +75,7 @@ public class ShellyApiClient
     {
         var httpResponseMessage = await PostAsync(request);
 
-        if (_options.ThrowIfNotSuccess 
-            && httpResponseMessage.StatusCode != HttpStatusCode.Created
-            && httpResponseMessage.StatusCode != HttpStatusCode.OK)
-            throw new HttpRequestException($"Status code is {httpResponseMessage.StatusCode}");
-        
-        var jsonResponse = await httpResponseMessage.Content.ReadAsStringAsync();
+        var jsonResponse = await httpResponseMessage!.Content.ReadAsStringAsync();
         var responseObj = JsonSerializer.Deserialize<ResponseRoot<T>>(jsonResponse);
         
         if (responseObj is null || !responseObj.IsOk)

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using ShellyApiClientLib.Exceptions;
 using ShellyApiClientLib.Models;
 using ShellyApiClientLib.ShellyRequests;
 
@@ -44,30 +45,30 @@ public class ShellyApiClient
 
     public async Task<HttpResponseMessage?> PostAsync(ShellyRequestBase request)
     {
-        HttpResponseMessage? response;
+        HttpResponseMessage? httpResponseMessage;
         
         // API can't handle more than one request per 1.5-2 seconds
         // below is a solution to handle this problem
         await _semaphore.WaitAsync();
         try
         {
-            response = await _httpClient.PostAsync(_url + request.Resource, GetRequestContent(request));
+            httpResponseMessage = await _httpClient.PostAsync(_url + request.Resource, GetRequestContent(request));
             await Task.Delay(_options.MinDelayBetweenRequestsMs);
+        
+            if (httpResponseMessage is null)
+                throw new HttpRequestException($"Response is null");
         }
         finally
         {
             _semaphore.Release();
         }
 
-        return response;
+        return httpResponseMessage;
     }
 
     public async Task<T?> PostAsync<T>(ShellyRequestBase request)
     {
         var httpResponseMessage = await PostAsync(request);
-        
-        if (httpResponseMessage is null)
-            throw new HttpRequestException($"Response is null");
 
         if (_options.ThrowIfNotSuccess 
             && httpResponseMessage.StatusCode != HttpStatusCode.Created
@@ -78,7 +79,7 @@ public class ShellyApiClient
         var responseObj = JsonSerializer.Deserialize<ResponseRoot<T>>(jsonResponse);
         
         if (responseObj is null || !responseObj.IsOk)
-            throw new JsonException("Response is not valid");
+            throw new HttpResponseException("Response is not valid", jsonResponse);
         
         return responseObj.Data;
     }

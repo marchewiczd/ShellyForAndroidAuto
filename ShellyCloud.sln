@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShellyApiClientLib", "ShellyApiClientLib\ShellyApiClientLib.csproj", "{D1E1352B-F348-418A-B5C0-BEBA5BF06F88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShellyApiConsoleApp", "ShellyApiConsoleApp\ShellyApiConsoleApp.csproj", "{4D74030C-DAEF-4A31-81C6-F15BDECBD883}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1E1352B-F348-418A-B5C0-BEBA5BF06F88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1E1352B-F348-418A-B5C0-BEBA5BF06F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1E1352B-F348-418A-B5C0-BEBA5BF06F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1E1352B-F348-418A-B5C0-BEBA5BF06F88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D74030C-DAEF-4A31-81C6-F15BDECBD883}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D74030C-DAEF-4A31-81C6-F15BDECBD883}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D74030C-DAEF-4A31-81C6-F15BDECBD883}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D74030C-DAEF-4A31-81C6-F15BDECBD883}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
